@@ -16,10 +16,7 @@ module.exports = function (config) {
             clearContext: false, // leave Jasmine Spec Runner output visible in browser
         },
         coverageReporter: {
-            dir: require("path").join(
-                __dirname,
-                "./coverage/ng-runtime-component-creator-workspace"
-            ),
+            dir: require("path").join(__dirname, "./coverage/ng-runtime-component-creator-workspace"),
             subdir: ".",
             reporters: [{ type: "html" }, { type: "text-summary" }],
         },

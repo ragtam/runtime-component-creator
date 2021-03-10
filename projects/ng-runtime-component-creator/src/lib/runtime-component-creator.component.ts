@@ -10,8 +10,13 @@ import {
     ViewContainerRef,
 } from '@angular/core';
 import { JitCompilerFactory } from '@angular/platform-browser-dynamic';
-import { ComponentMetadata } from './component-metadata';
 import { createCompiler } from './create-jit-compiler';
+
+export interface ComponentMetadata {
+    component: any | string;
+    declarations?: any[];
+    imports?: any[];
+}
 
 @Component({
     selector: 'ng-runtime-component-creator',
@@ -35,22 +40,38 @@ export class RuntimeComponentCreatorComponent implements OnChanges {
         this.viewContainerRef.remove();
     }
 
-    private async createViewAndAttatchItToContainer({
-        component,
-        declarations = [],
-        imports = [],
-    }: ComponentMetadata): Promise<void> {
+    private async createViewAndAttatchItToContainer({ component, declarations = [], imports = [] }: ComponentMetadata): Promise<void> {
         const tmpModule = NgModule({
-            declarations: [component],
+            declarations: [this.getComponent(component)],
             imports: [...imports],
         })(class {});
 
-        this.compiler
-            .compileModuleAndAllComponentsAsync(tmpModule)
-            .then((factories) => {
-                const f = factories.componentFactories[0];
-                const cmpRef = this.viewContainerRef.createComponent(f);
-            });
+        try {
+            this.compiler.compileModuleAndAllComponentsAsync(tmpModule).then(
+                (factories) => {
+                    const f = factories.componentFactories[0];
+                    const cmpRef = this.viewContainerRef.createComponent(f);
+                },
+                (error) => {
+                    console.error(error);
+                }
+            );
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    private getComponent(component: any | string): any {
+        if (typeof component === 'string') {
+            @Component({
+                selector: 'ng-runtime-component-creator-dummy-selector',
+                template: component,
+            })
+            class NgRuntmieComponentCreatorDummySelectorComponent {}
+            return NgRuntmieComponentCreatorDummySelectorComponent;
+        } else {
+            return component;
+        }
     }
 }
 

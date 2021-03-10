@@ -22,8 +22,7 @@ export class AppComponent {
 function getThisComponent(): any {
     @Component({
         selector: 'ng-test',
-        template:
-            '<h1 (click)="onClick()">Whhooooah, I am working! Now click here!/h1>',
+        template: '<h1 (click)="onClick()">Whhooooah, I am working! Now click here!/h1>',
     })
     class NgTextClass implements OnInit {
         constructor(private helloWorldService: HelloWorldService) {}

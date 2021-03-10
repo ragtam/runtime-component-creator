@@ -3,4 +3,3 @@
  */
 
 export * from './lib/runtime-component-creator.component';
-export * from './lib/component-metadata';
